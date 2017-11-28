@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  db:
+    build: ./db
+    image: db:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    container_name: db_container
+    env_file: ./secrets.env
+    environment:
+      DB_NAME: wordpress
+
+  web:
+    depends_on:
+      - db
+    build: ./web
+    image: web:latest
+    container_name: web_container
+    ports:
+      - "8080:80"
+
+    env_file: ./secrets.env
+    environment:
+      DB_HOST: db
+      DB_NAME: wordpress
+
+volumes:
+    db_data:
